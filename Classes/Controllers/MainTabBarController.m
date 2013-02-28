@@ -34,12 +34,12 @@
         if (![session isAnonymous] && [[HNSessionController sessionController] numberOfSessions] != 1) {
             [self setTitle:[[session user] identifier]];
         } else {
-            [self setTitle:@"Hacker News"];
+            [self setTitle:@"Startup News"];
         }
 
         HNEntryList *homeList = [HNEntryList session:session entryListWithIdentifier:kHNEntryListIdentifierSubmissions];
         home = [[[SubmissionListController alloc] initWithSource:homeList] autorelease];
-        [home setTitle:@"Hacker News"];
+        [home setTitle:@"Startup News"];
         [home setTabBarItem:[[[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"home.png"] tag:0] autorelease]];
         
         HNEntryList *newList = [HNEntryList session:session entryListWithIdentifier:kHNEntryListIdentifierNewSubmissions];

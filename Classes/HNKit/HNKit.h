@@ -7,7 +7,7 @@
 //
 
 // This is the main header file for the HNKit "framework",
-// which has the singular purpose of scraping Hacker News.
+// which has the singular purpose of scraping Startup News.
 //
 // HNKit depends on the files in the "XML" directory, as
 // well as few files in the "Categories" folder.

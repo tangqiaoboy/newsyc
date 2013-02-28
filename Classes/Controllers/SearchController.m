@@ -27,7 +27,7 @@
     
     searchBar = [[UISearchBar alloc] init];
     [searchBar sizeToFit];
-    [searchBar setPlaceholder:@"Search Hacker News"];
+    [searchBar setPlaceholder:@"Search Startup News"];
     [searchBar setFrame:CGRectMake(0, 0, [[self view] bounds].size.width, [searchBar bounds].size.height)];
     [searchBar setAutoresizingMask:UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth];
     [searchBar setDelegate:self];

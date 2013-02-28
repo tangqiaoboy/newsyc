@@ -104,7 +104,7 @@
         } 
     } else if ([indexPath section] == 2) {
         if ([indexPath row] == 0) {
-            [[cell textLabel] setText:@"Hacker News FAQ"];
+            [[cell textLabel] setText:@"Startup News FAQ"];
         } else if ([indexPath row] == 1) {
             [[cell textLabel] setText:@"news:yc homepage"];
         } else if ([indexPath row] == 2) {

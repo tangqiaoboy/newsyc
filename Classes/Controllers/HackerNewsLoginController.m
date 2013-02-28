@@ -16,10 +16,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [topLabel setText:@"Hacker News"];
+    [topLabel setText:@"Startup News"];
     [topLabel setTextColor:[UIColor whiteColor]];
     [topLabel setShadowColor:[UIColor blackColor]];
-    [bottomLabel setText:@"Your info is only shared with Hacker News."];
+    [bottomLabel setText:@"Your info is only shared with Startup News."];
     [bottomLabel setTextColor:[UIColor whiteColor]];
 }
 
