@@ -1,5 +1,5 @@
-## Welcome to news:yc on GitHub! ##
+## Welcome ##
 
-I should add more info here, but for right now feel free to just browse around. Check out the issues section for things you could try implementing if you want to contribute.
-
+这是 @fenng 的[Startup News](http://news.dbanotes.net/news)平台的iOS客户端。
+基于 Hacker News 的开源客户端更改。
 
