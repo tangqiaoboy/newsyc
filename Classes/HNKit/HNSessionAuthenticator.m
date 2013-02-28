@@ -107,6 +107,9 @@
 
 - (NSString *)_generateLoginTokenWithForLoginPage:(NSString *)loginPage {
     if (loginPage == nil) return nil;
+    if ([loginPage hasPrefix:@"/"]) {
+        loginPage = [loginPage substringFromIndex:1];
+    }
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [kHNWebsiteURL absoluteString], loginPage]];
     NSData *data = [NSData dataWithContentsOfURL:url];
