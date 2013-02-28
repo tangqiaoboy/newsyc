@@ -5,9 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>news:yc</string>
-	<key>CFBundleDocumentTypes</key>
-	<array/>
+	<string>Startup News</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -22,8 +20,6 @@
 	<string>1.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array/>
 	<key>CFBundleVersion</key>
 	<string>1.5</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -43,7 +39,7 @@
 				<key>Blue</key>
 				<integer>0</integer>
 				<key>Green</key>
-				<real>0.4</real>
+				<real>0.40000000000000002</real>
 				<key>Red</key>
 				<integer>1</integer>
 			</dict>
@@ -58,9 +54,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UTExportedTypeDeclarations</key>
-	<array/>
-	<key>UTImportedTypeDeclarations</key>
-	<array/>
 </dict>
 </plist>
