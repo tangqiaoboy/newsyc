@@ -151,6 +151,8 @@
 		7DF2C44414F8CBE600E01067 /* action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2C44214F8CBE600E01067 /* action@2x.png */; };
 		7DF2C44814F9BA4800E01067 /* HNContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2C44714F9BA4800E01067 /* HNContainer.m */; };
 		7DFFDF0B13325FF20082F55A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DFFDF0A13325FF20082F55A /* CoreText.framework */; };
+		88E6A07616E07940001D12D2 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E6A07416E07940001D12D2 /* Icon-72@2x.png */; };
+		88E6A07716E07940001D12D2 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E6A07516E07940001D12D2 /* Icon-72.png */; };
 		CBFCE7AD1398712F007A5DDD /* SearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFCE7AB1398712F007A5DDD /* SearchController.m */; };
 		CBFCE7F613989054007A5DDD /* HNAPISearch.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFCE7F513989054007A5DDD /* HNAPISearch.m */; };
 		FA5F796B134CE04F002EEBCA /* InstapaperLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5F796A134CE04F002EEBCA /* InstapaperLoginController.m */; };
@@ -388,6 +390,8 @@
 		7DF2C44714F9BA4800E01067 /* HNContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNContainer.m; sourceTree = "<group>"; };
 		7DF2C44914F9BCB400E01067 /* HNShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNShared.h; sourceTree = "<group>"; };
 		7DFFDF0A13325FF20082F55A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		88E6A07416E07940001D12D2 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		88E6A07516E07940001D12D2 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		CBFCE7AA1398712F007A5DDD /* SearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchController.h; sourceTree = "<group>"; };
 		CBFCE7AB1398712F007A5DDD /* SearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchController.m; sourceTree = "<group>"; };
 		CBFCE7F413989054007A5DDD /* HNAPISearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNAPISearch.h; sourceTree = "<group>"; };
@@ -809,6 +813,8 @@
 		7DD03DEF14529E980007A069 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				88E6A07416E07940001D12D2 /* Icon-72@2x.png */,
+				88E6A07516E07940001D12D2 /* Icon-72.png */,
 				7D6B9E391347DF2E00CD923C /* Icon.png */,
 				7D6B9E3A1347DF2E00CD923C /* Icon@2x.png */,
 			);
@@ -951,6 +957,8 @@
 				7DAD87DD16A52E25003FF065 /* UIPlacardButtonBkgnd@2x.png in Resources */,
 				7DAD87DE16A52E25003FF065 /* UIPlacardButtonPressedBkgnd.png in Resources */,
 				7DAD87DF16A52E25003FF065 /* UIPlacardButtonPressedBkgnd@2x.png in Resources */,
+				88E6A07616E07940001D12D2 /* Icon-72@2x.png in Resources */,
+				88E6A07716E07940001D12D2 /* Icon-72.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
