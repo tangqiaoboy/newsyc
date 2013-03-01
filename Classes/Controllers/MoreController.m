@@ -129,7 +129,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 2) {
-        return [NSString stringWithFormat:@"news:yc version %@.\n\nIf you're having issues or have suggestions, feel free to email me: support@newsyc.me\n\nSettings are available in the Settings app.", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+        return [NSString stringWithFormat:@"Startup News, version %@.\n\n 基于开源的Hacker News修改而来。\n如果你发现任何Bug，请反馈给 tangqiaoboy@gmail.com。", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
     }
     
     return nil;
