@@ -107,6 +107,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
+    // HNSessionController 用于管理所有的用户会话，会话信息包括cookie，用户名，密码等，存在NSUserDefaults中
     HNSessionController *sessionController = [HNSessionController sessionController];
     NSArray *sessions = [sessionController sessions];
     HNSession *recentSession = [sessionController recentSession];
@@ -115,15 +116,18 @@
         recentSession = [sessions lastObject];
     }
 
+    // Session List列出所有的账号，如果是app启动时出现，则自动push进入某一个具体session的页面，即MainTabBarController
     SessionListController *sessionListController = [[SessionListController alloc] init];
     [sessionListController setAutomaticDisplaySession:recentSession];
     [sessionListController autorelease];
     
+    // 最外层的navigation controller，
     navigationController = [[NavigationController alloc] initWithRootViewController:sessionListController];
     [navigationController setLoginDelegate:sessionListController];
     [navigationController setDelegate:self];
     [navigationController autorelease];
     
+    // 区分设置iphone或ipad的root view controller
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [window setRootViewController:navigationController];
         
