@@ -151,6 +151,8 @@
 		7DF2C44414F8CBE600E01067 /* action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2C44214F8CBE600E01067 /* action@2x.png */; };
 		7DF2C44814F9BA4800E01067 /* HNContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2C44714F9BA4800E01067 /* HNContainer.m */; };
 		7DFFDF0B13325FF20082F55A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DFFDF0A13325FF20082F55A /* CoreText.framework */; };
+		8802D8E916E2254C00B6AA86 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8802D8E716E2254C00B6AA86 /* libMobClickLibrary.a */; };
+		8802D8EB16E2261A00B6AA86 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8802D8EA16E2261A00B6AA86 /* libz.dylib */; };
 		88E6A07616E07940001D12D2 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E6A07416E07940001D12D2 /* Icon-72@2x.png */; };
 		88E6A07716E07940001D12D2 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E6A07516E07940001D12D2 /* Icon-72.png */; };
 		CBFCE7AD1398712F007A5DDD /* SearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFCE7AB1398712F007A5DDD /* SearchController.m */; };
@@ -390,6 +392,9 @@
 		7DF2C44714F9BA4800E01067 /* HNContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNContainer.m; sourceTree = "<group>"; };
 		7DF2C44914F9BCB400E01067 /* HNShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNShared.h; sourceTree = "<group>"; };
 		7DFFDF0A13325FF20082F55A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		8802D8E716E2254C00B6AA86 /* libMobClickLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary.a; sourceTree = "<group>"; };
+		8802D8E816E2254C00B6AA86 /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
+		8802D8EA16E2261A00B6AA86 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		88E6A07416E07940001D12D2 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		88E6A07516E07940001D12D2 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		CBFCE7AA1398712F007A5DDD /* SearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchController.h; sourceTree = "<group>"; };
@@ -409,6 +414,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8802D8EB16E2261A00B6AA86 /* libz.dylib in Frameworks */,
 				7D75447C16A8C83B000AAB40 /* MobileCoreServices.framework in Frameworks */,
 				7D148E65132D68B5008FBF32 /* libxml2.dylib in Frameworks */,
 				7D96C60D1426CC1B00A76F04 /* MessageUI.framework in Frameworks */,
@@ -417,6 +423,7 @@
 				7D1F98961320CF720059EBBB /* CoreGraphics.framework in Frameworks */,
 				7DFFDF0B13325FF20082F55A /* CoreText.framework in Frameworks */,
 				7D8A660813333A72002012AA /* QuartzCore.framework in Frameworks */,
+				8802D8E916E2254C00B6AA86 /* libMobClickLibrary.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +433,7 @@
 		7D1F98821320CF720059EBBB = {
 			isa = PBXGroup;
 			children = (
+				8802D8EA16E2261A00B6AA86 /* libz.dylib */,
 				7D6B9E5B1347DF2E00CD923C /* Classes */,
 				7D6B9E361347DF2E00CD923C /* Resources */,
 				7D6B9EEF1347DF2E00CD923C /* Info.plist */,
@@ -529,6 +537,7 @@
 		7D6B9E5B1347DF2E00CD923C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8802D8E616E2254C00B6AA86 /* UMAnalytics_Sdk_2.1.3.OpenUDID */,
 				7D6BAB7C14128A5700C24B8B /* Experimental */,
 				7D6B9E5C1347DF2E00CD923C /* Categories */,
 				7D6B9EEA1347DF2E00CD923C /* XML */,
@@ -847,6 +856,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		8802D8E616E2254C00B6AA86 /* UMAnalytics_Sdk_2.1.3.OpenUDID */ = {
+			isa = PBXGroup;
+			children = (
+				8802D8E716E2254C00B6AA86 /* libMobClickLibrary.a */,
+				8802D8E816E2254C00B6AA86 /* MobClick.h */,
+			);
+			path = UMAnalytics_Sdk_2.1.3.OpenUDID;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1105,6 +1123,7 @@
 					armv7,
 					armv6,
 				);
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: gao peng (8L2Q99323X)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1114,7 +1133,12 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes/UMAnalytics_Sdk_2.1.3.OpenUDID\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CA0F632F-10C8-439C-AC9A-6F28F84640E9";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1128,6 +1152,7 @@
 					armv7,
 					armv6,
 				);
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: gao peng (8L2Q99323X)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Classes/Prefix.pch;
@@ -1136,7 +1161,12 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes/UMAnalytics_Sdk_2.1.3.OpenUDID\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CA0F632F-10C8-439C-AC9A-6F28F84640E9";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

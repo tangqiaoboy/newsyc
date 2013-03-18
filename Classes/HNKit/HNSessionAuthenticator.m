@@ -101,7 +101,7 @@
     if (document == nil) return nil;
     
     // XXX: this xpath is really ugly :(
-    XMLElement *element = [document firstElementMatchingPath:@"//table//tr[1]//table//tr//td//span[@class='pagetop']//a[text()='login']"];
+    XMLElement *element = [document firstElementMatchingPath:@"//table//tr[1]//table//tr//td//span[@class='pagetop']//a[text()='Login/Register']"];
     return [element attributeWithName:@"href"];
 }
 
