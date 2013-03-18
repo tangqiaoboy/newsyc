@@ -21,6 +21,7 @@
 #import "BrowserController.h"
 #import "MoreController.h"
 #import "EmptyController.h"
+#import "MobClick.h"
 
 #import "HNKit.h"
 #import "InstapaperSession.h"
@@ -158,6 +159,7 @@
     [pingController setDelegate:self];
     [pingController ping];
     
+    [MobClick startWithAppkey:@"5130038e527015754500005d"];
     return YES;
 }
          
