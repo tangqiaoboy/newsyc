@@ -70,9 +70,9 @@
 
 - (NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0: return 4;
+        case 0: return 2;
         case 1: return 2;
-        case 2: return 3;
+        case 2: return 4;
         default: return 0;
     }
 }
@@ -108,7 +108,9 @@
         } else if ([indexPath row] == 1) {
             [[cell textLabel] setText:@"news:yc homepage"];
         } else if ([indexPath row] == 2) {
-            [[cell textLabel] setText:@"@newsyc_"];
+            [[cell textLabel] setText:@"@Fenng"];
+        }else if ([indexPath row] == 3) {
+            [[cell textLabel] setText:@"家庭用药"];
         }
     }
     
@@ -129,7 +131,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 2) {
-        return [NSString stringWithFormat:@"Startup News, version %@.\n\n 基于开源的Hacker News修改而来。\n如果你发现任何Bug，请反馈给 tangqiaoboy@gmail.com。", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+        return [NSString stringWithFormat:@"Startup News, version %@.\n\n 基于开源的 news:yc 修改而来 \n如发现任何Bug，请微博反馈给 @Fenng", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
     }
     
     return nil;
@@ -170,7 +172,7 @@
         }
     } else if ([indexPath section] == 2) {
         if ([indexPath row] == 0) {
-            BrowserController *controller = [[BrowserController alloc] initWithURL:kHNFAQURL];
+            BrowserController *controller = [[BrowserController alloc] initWithURL:[NSURL URLWithString:@"http://dbanotes.net/startup_news.html"]/*kHNFAQURL*/];
             [[self navigationController] pushController:[controller autorelease] animated:YES];
             return;
         } else if ([indexPath row] == 1) {
@@ -178,8 +180,11 @@
             [[self navigationController] pushController:[controller autorelease] animated:YES];
             return;
         } else if ([indexPath row] == 2) {
-            BrowserController *controller = [[BrowserController alloc] initWithURL:[NSURL URLWithString:@"https://twitter.com/newsyc_"]];
+            BrowserController *controller = [[BrowserController alloc] initWithURL:[NSURL URLWithString:@"http://weibo.com/Fenng"]];
             [[self navigationController] pushController:[controller autorelease] animated:YES];
+            return;
+        }else if ([indexPath row] == 3) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/id521635095?mt=8"]];
             return;
         }
     }

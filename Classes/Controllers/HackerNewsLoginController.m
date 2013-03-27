@@ -19,7 +19,7 @@
     [topLabel setText:@"Startup News"];
     [topLabel setTextColor:[UIColor whiteColor]];
     [topLabel setShadowColor:[UIColor blackColor]];
-    [bottomLabel setText:@"Your info is only shared with Startup News."];
+    [bottomLabel setText:@"Your info is only shared with Startup News.\n 免费注册，请访问 news.dbanotes.net"];
     [bottomLabel setTextColor:[UIColor whiteColor]];
 }
 
