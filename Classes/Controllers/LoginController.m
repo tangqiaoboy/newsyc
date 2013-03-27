@@ -152,6 +152,7 @@
     [bottomLabel setTextAlignment:NSTextAlignmentCenter];
     [bottomLabel setBackgroundColor:[UIColor clearColor]];
     [bottomLabel setFont:[UIFont systemFontOfSize:14.0f]];
+    bottomLabel.numberOfLines = 2;
     
     topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [tableView bounds].size.width, 40.0f)];
     [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
