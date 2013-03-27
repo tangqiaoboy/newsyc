@@ -176,7 +176,7 @@
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     popoverItem = [barButtonItem retain];
     // XXX: work around navigation bar shrinking this button
-    [popoverItem setTitle:@"HN"];
+    [popoverItem setTitle:@"SN"];
     popover = [pc retain];
     
     NSArray *controllers = [rightNavigationController viewControllers];
