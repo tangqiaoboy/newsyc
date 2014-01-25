@@ -8,6 +8,7 @@
 
 #import "ActivityIndicatorItem.h"
 #import "BarButtonItem.h"
+#import "OrangeToolbar.h"
 
 typedef enum {
     kEntryActionsViewItemUpvote,
@@ -27,7 +28,7 @@ typedef enum {
 
 @protocol EntryActionsViewDelegate;
 @class HNEntry;
-@interface EntryActionsView : UIToolbar {
+@interface EntryActionsView : OrangeToolbar {
     HNEntry *entry;
     __weak id<EntryActionsViewDelegate> delegate;
     
@@ -43,6 +44,7 @@ typedef enum {
     BOOL actionsDisabled;
     
     EntryActionsViewStyle style;
+    UIActivityIndicatorViewStyle indicatorStyle;
 }
 
 @property (nonatomic, retain) HNEntry *entry;

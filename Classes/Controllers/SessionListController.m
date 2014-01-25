@@ -20,7 +20,7 @@
 
 - (id)init {
     if ((self = [super init])) {
-        [self setTitle:@"Sessions"];
+        [self setTitle:@"Accounts"];
     }
 
     return self;
@@ -94,6 +94,16 @@
     }
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    /*if ([self respondsToSelector:@selector(topLayoutGuide)] && [self respondsToSelector:@selector(bottomLayoutGuide)]) {
+        UIEdgeInsets insets = UIEdgeInsetsMake([[self topLayoutGuide] length], 0, [[self bottomLayoutGuide] length], 0);
+        [tableView setScrollIndicatorInsets:insets];
+        [tableView setContentInset:insets];
+    }*/
+}
+
 - (void)viewDidUnload {
     [super viewDidUnload];
 
@@ -137,7 +147,7 @@
     BOOL hideBackButton = [session isAnonymous] || ([sessions count] == 1);
     [[tabBarController navigationItem] setHidesBackButton:hideBackButton];
     
-    [[self navigationController] pushController:tabBarController animated:animated];
+    [[self navigation] pushController:tabBarController animated:animated];
     [tabBarController release];
 }
 
@@ -174,18 +184,18 @@
 - (void)navigationController:(NavigationController *)navigationController didLoginWithSession:(HNSession *)session {
     if ([navigationController topViewController] != self) {
         [self setAutomaticDisplaySession:session];
-        [[self navigationController] popToController:self animated:YES];
+        [[self navigation] popToController:self animated:YES];
     } else {
         [self pushMainControllerForSession:session animated:YES];
     }
 }
 
 - (void)navigationControllerRequestedSessions:(NavigationController *)navigationController {
-    [[self navigationController] popToController:self animated:YES];
+    [[self navigation] popToController:self animated:YES];
 }
 
 - (void)addSessionFromBarButtonItem:(BarButtonItem *)barButtonItem {
-    [[self navigationController] requestLogin];
+    [[self navigation] requestLogin];
 }
 
 #pragma mark - Table View

@@ -21,11 +21,12 @@
 #import "BrowserController.h"
 #import "MoreController.h"
 #import "EmptyController.h"
-#import "MobClick.h"
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
+#import <HNKit/HNNetworkActivityController.h>
 #import "InstapaperSession.h"
 
+#import "UIApplication+ActivityIndicator.h"
 #import "UINavigationItem+MultipleItems.h"
 
 @implementation UINavigationController (AppDelegate)
@@ -101,12 +102,40 @@
     }
 }
 
+- (NSArray *)controllers {
+    AppDelegate *delegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Not supported on iPad." userInfo:nil];
+    } else {
+        return [delegate branchControllers];
+    }
+}
+
+- (void)setControllers:(NSArray *)controllers animated:(BOOL)animated {
+    AppDelegate *delegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Not supported on iPad." userInfo:nil];
+    } else {
+        [delegate setBranchControllers:controllers animated:animated];
+    }
+}
+
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+    [HNNetworkActivityController setNetworkActivityBeganBlock:^{
+        [[UIApplication sharedApplication] retainNetworkActivityIndicator];
+    }];
+
+    [HNNetworkActivityController setNetworkActivityEndedBlock:^{
+        [[UIApplication sharedApplication] releaseNetworkActivityIndicator];
+    }];
 
     HNSessionController *sessionController = [HNSessionController sessionController];
     NSArray *sessions = [sessionController sessions];
@@ -159,7 +188,7 @@
     [pingController setDelegate:self];
     [pingController ping];
     
-    [MobClick startWithAppkey:@"5130038e527015754500005d"];
+    //[MobClick startWithAppkey:@"5130038e527015754500005d"];
     return YES;
 }
          
@@ -203,17 +232,30 @@
     // XXX: workaround Apple bug causing the controller to stretch to fill
     // the entire screen after it unloads the view from a memory warning
     CGRect frame = [[viewController view] frame];
-    frame.size.width = 320.0f;
+    frame.size.width = 324.0f;
     [[viewController view] setFrame:frame];
 }
 
-- (void)pushBranchViewController:(UIViewController *)branchController animated:(BOOL)animated {
-    [navigationController pushViewController:branchController animated:animated];
-    
+- (void)updateForBranchController:(UIViewController *)branchController {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [[branchController navigationItem] setRightBarButtonItems:[[branchController navigationItem] leftBarButtonItems]];
         [[branchController navigationItem] setLeftBarButtonItems:nil];
     }
+}
+
+- (void)pushBranchViewController:(UIViewController *)branchController animated:(BOOL)animated {
+    [navigationController pushViewController:branchController animated:animated];
+
+    [self updateForBranchController:branchController];
+}
+
+- (NSArray *)branchControllers {
+    return [navigationController viewControllers];
+}
+
+- (void)setBranchControllers:(NSArray *)branchControllers animated:(BOOL)animated {
+    [navigationController setViewControllers:branchControllers animated:animated];
+    [self updateForBranchController:[branchControllers lastObject]];
 }
 
 - (void)pushLeafViewController:(UIViewController *)leafController animated:(BOOL)animated {

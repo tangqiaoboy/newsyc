@@ -6,7 +6,7 @@
 //  Copyright 2011 Xuzz Productions, LLC. All rights reserved.
 //
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "MoreController.h"
 #import "ProfileController.h"
@@ -48,6 +48,16 @@
     [super viewDidLoad];
     
     [self setTitle:@"More"];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    /*if ([self respondsToSelector:@selector(topLayoutGuide)] && [self respondsToSelector:@selector(bottomLayoutGuide)]) {
+        UIEdgeInsets insets = UIEdgeInsetsMake([[self topLayoutGuide] length], 0, [[self bottomLayoutGuide] length], 0);
+        [tableView setScrollIndicatorInsets:insets];
+        [tableView setContentInset:insets];
+    }*/
 }
 
 - (void)viewDidUnload {
@@ -177,7 +187,7 @@
             return;
         } else if ([indexPath row] == 1) {
             BrowserController *controller = [[BrowserController alloc] initWithURL:[NSURL URLWithString:@"http://newsyc.me/"]];
-            [[self navigationController] pushController:[controller autorelease] animated:YES];
+            [[self navigation] pushController:[controller autorelease] animated:YES];
             return;
         } else if ([indexPath row] == 2) {
             BrowserController *controller = [[BrowserController alloc] initWithURL:[NSURL URLWithString:@"http://weibo.com/Fenng"]];
@@ -194,9 +204,9 @@
     [controller setTitle:title];
     
     if (controllerClass == [SubmissionListController class]) {
-        [[self navigationController] pushController:[controller autorelease] animated:YES];
+        [[self navigation] pushController:[controller autorelease] animated:YES];
     } else {
-        [[self navigationController] pushController:[controller autorelease] animated:YES];
+        [[self navigation] pushController:[controller autorelease] animated:YES];
     }
 }
 

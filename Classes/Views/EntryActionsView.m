@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "EntryActionsView.h"
 #import "UIImage+Colorize.h"
@@ -31,6 +31,19 @@
     }
     
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    if (style == kEntryActionsViewStyleTransparentDark || style == kEntryActionsViewStyleTransparentLight) {
+        // Remove the iOS 7 shadow line by adjusting our bounds origin.
+        if ([self respondsToSelector:@selector(setBarTintColor:)]) {
+            [self setClipsToBounds:YES];
+            [self setBounds:CGRectMake(0, 1, [self bounds].size.width, [self bounds].size.height)];
+        }
+    }
 }
 
 - (void)dealloc {
@@ -74,26 +87,68 @@
 
 - (void)setStyle:(EntryActionsViewStyle)style_ {
     style = style_;
-    
+
+    BOOL orange = NO;
+    BOOL transparent = NO;
+
     if (style == kEntryActionsViewStyleDefault) {
-        [self setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-        [self setTintColor:nil];
+        if ([self respondsToSelector:@selector(setBarTintColor:)]) {
+            orange = NO;
+            transparent = NO;
+            indicatorStyle = UIActivityIndicatorViewStyleGray;
+        } else {
+            orange = NO;
+            transparent = NO;
+            indicatorStyle = UIActivityIndicatorViewStyleWhite;
+        }
     } else if (style == kEntryActionsViewStyleOrange) {
-        [self setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-        [self setTintColor:[UIColor mainOrangeColor]];
+        orange = YES;
+        transparent = NO;
+        indicatorStyle = UIActivityIndicatorViewStyleWhite;
     } else if (style == kEntryActionsViewStyleLight) {
+        if ([self respondsToSelector:@selector(setBarTintColor:)]) {
+            orange = NO;
+            transparent = YES;
+            indicatorStyle = UIActivityIndicatorViewStyleGray;
+        } else {
+            orange = NO;
+            transparent = NO;
+            indicatorStyle = UIActivityIndicatorViewStyleWhite;
+        }
+    } else if (style == kEntryActionsViewStyleTransparentLight) {
+        orange = NO;
+        transparent = YES;
+        indicatorStyle = UIActivityIndicatorViewStyleWhite;
+    } else if (style == kEntryActionsViewStyleTransparentDark) {
+        orange = NO;
+        transparent = YES;
+        indicatorStyle = UIActivityIndicatorViewStyleGray;
+    }
+
+    [self setOrange:orange];
+
+    if (transparent) {
+        UIImage *clearImage = [UIImage imageNamed:@"clear.png"];
+
+        [self setBackgroundImage:clearImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        if ([self respondsToSelector:@selector(setShadowImage:forToolbarPosition:)]) {
+            [self setShadowImage:clearImage forToolbarPosition:UIToolbarPositionAny];
+        }
+    } else {
+        [self setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        if ([self respondsToSelector:@selector(setShadowImage:forToolbarPosition:)]) {
+            [self setShadowImage:nil forToolbarPosition:UIToolbarPositionAny];
+        }
+    }
+
+    if (style == kEntryActionsViewStyleLight && ![self respondsToSelector:@selector(setBarTintColor:)]) {
         UIImage *backgroundImage = [[UIImage imageNamed:@"toolbar-expanded.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
         [self setBackgroundImage:backgroundImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+
         [self setTintColor:[UIColor whiteColor]];
-    } else if (style == kEntryActionsViewStyleTransparentLight) {
-        UIImage *clearImage = [UIImage imageNamed:@"clear.png"];
-        [self setBackgroundImage:clearImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-        [self setTintColor:[UIColor blackColor]];
-    } else if (style == kEntryActionsViewStyleTransparentDark) {
-        UIImage *clearImage = [UIImage imageNamed:@"clear.png"];
-        [self setBackgroundImage:clearImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-        [self setTintColor:nil];
     }
+
+    [self updateItems];
 }
 
 // XXX: this is just one giant hack; we should store references to these objects
@@ -157,18 +212,28 @@
     }
 }
 
+- (UIImage *)_modernImageWithName:(NSString *)name {
+    if ([self respondsToSelector:@selector(barTintColor)]) {
+        name = [name stringByAppendingString:@"7"];
+    }
+
+    name = [name stringByAppendingString:@".png"];
+
+    return [UIImage imageNamed:name];
+}
+
 - (UIImage *)imageForItem:(EntryActionsViewItem)item {
     switch (item) {
         case kEntryActionsViewItemReply:
-            return [UIImage imageNamed:@"reply.png"];
+            return [self _modernImageWithName:@"reply"];
         case kEntryActionsViewItemUpvote:
-            return [UIImage imageNamed:@"upvote.png"];
+            return [self _modernImageWithName:@"upvote"];
         case kEntryActionsViewItemFlag:
-            return [UIImage imageNamed:@"flag.png"];
+            return [self _modernImageWithName:@"flag"];
         case kEntryActionsViewItemDownvote:
-            return [UIImage imageNamed:@"downvote.png"];
+            return [self _modernImageWithName:@"downvote"];
         case kEntryActionsViewItemActions:
-            return [UIImage imageNamed:@"action.png"];
+            return [self _modernImageWithName:@"action"];
         default:
             return nil;
     }
@@ -183,7 +248,10 @@
     UIImage *itemImage = [self imageForItem:item];
     
     if ([self itemIsLoading:item]) {
-        barButtonItem = [[[ActivityIndicatorItem alloc] initWithSize:[itemImage size]] autorelease];
+        ActivityIndicatorItem *activityIndicatorItem = [[ActivityIndicatorItem alloc] initWithSize:[itemImage size]];
+        [[activityIndicatorItem spinner] setActivityIndicatorViewStyle:indicatorStyle];
+
+        barButtonItem = [activityIndicatorItem autorelease];
     } else {
         SEL action = NULL;
 

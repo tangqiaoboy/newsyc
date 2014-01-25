@@ -6,7 +6,7 @@
 //  Copyright 2011 Xuzz Productions, LLC. All rights reserved.
 //
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "CommentTableCell.h"
 
@@ -21,7 +21,6 @@
 - (id)initWithReuseIdentifier:(NSString *)identifier {
     if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier])) {
         [contentView setBackgroundColor:[UIColor whiteColor]];
-        [self setShowsDivider:NO];
         
         CALayer *layer = [contentView layer];
         [layer setContentsGravity:kCAGravityBottomLeft];
@@ -136,10 +135,18 @@
 }
 
 + (CGSize)offsets {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return CGSizeMake(8.0f, 8.0f);
-    } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return CGSizeMake(8.0f, 4.0f);
+    if ([self instancesRespondToSelector:@selector(separatorInset)]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            return CGSizeMake(8.0f, 14.0f);
+        } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return CGSizeMake(8.0f, 10.0f);
+        }
+    } else {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            return CGSizeMake(8.0f, 8.0f);
+        } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return CGSizeMake(8.0f, 4.0f);
+        }
     }
 
     return CGSizeZero;
@@ -156,10 +163,18 @@
 }
 
 + (UIFont *)userFont {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return [UIFont boldSystemFontOfSize:17.0f];
-    } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return [UIFont boldSystemFontOfSize:14.0f];
+    if ([self instancesRespondToSelector:@selector(separatorInset)]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            return [UIFont systemFontOfSize:24.0f];
+        } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return [UIFont systemFontOfSize:19.0f];
+        }
+    } else {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            return [UIFont boldSystemFontOfSize:17.0f];
+        } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return [UIFont boldSystemFontOfSize:14.0f];
+        }
     }
 
     return nil;
@@ -213,7 +228,7 @@
     height += margins.bottom;
     if (expanded) height += 44.0f;
     
-    return height;
+    return ceilf(height);
 }
 
 #pragma mark - Drawing
@@ -252,7 +267,7 @@
 
     CGRect daterect;
     daterect.size = [[self dateText] sizeWithFont:[[self class] dateFont]];
-    daterect.origin = CGPointMake(bounds.size.width - daterect.size.width - margins.right, margins.top);
+    daterect.origin = CGPointMake(bounds.size.width - daterect.size.width - margins.right, CGRectGetMidY([self userRect]) - daterect.size.height / 2);
 
     return daterect;
 }
@@ -363,15 +378,17 @@
         [[UIColor grayColor] set];
         [[self commentsText] drawInRect:[self commentsRect] withFont:[[self class] subtleFont] lineBreakMode:NSLineBreakByTruncatingHead alignment:NSTextAlignmentRight];
     }
+
+    if (![self respondsToSelector:@selector(separatorInset)]) {
+        CGRect linerect;
+        linerect.size.width = bounds.size.width;
+        linerect.size.height = (1.0f / [[UIScreen mainScreen] scale]);
+        linerect.origin.x = 0;
+        linerect.origin.y = bounds.size.height - linerect.size.height;
     
-    CGRect linerect;
-    linerect.size.width = bounds.size.width;
-    linerect.size.height = (1.0f / [[UIScreen mainScreen] scale]);
-    linerect.origin.x = 0;
-    linerect.origin.y = bounds.size.height - linerect.size.height;
-    
-    [[UIColor colorWithWhite:0.85f alpha:1.0f] set];
-    UIRectFill(linerect);
+        [[UIColor colorWithWhite:0.85f alpha:1.0f] set];
+        UIRectFill(linerect);
+    }
 }
 
 #pragma mark - Tap Handlers

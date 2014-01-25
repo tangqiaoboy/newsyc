@@ -11,9 +11,24 @@
 #import "LoginController.h"
 #import "UIColor+Orange.h"
 #import "HackerNewsLoginController.h"
+#import "OrangeNavigationBar.h"
 
 @implementation NavigationController
 @synthesize loginDelegate;
+
+- (id)init {
+    return [self initWithRootViewController:nil];
+}
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController {
+    if ((self = [super initWithNavigationBarClass:[OrangeNavigationBar class] toolbarClass:nil])) {
+        if (rootViewController != nil) {
+            [self pushViewController:rootViewController animated:NO];
+        }
+    }
+
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,11 +56,24 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]) {
-        [[self navigationBar] setTintColor:[UIColor mainOrangeColor]];
-    } else {
-        [[self navigationBar] setTintColor:nil];
+    OrangeNavigationBar *navigationBar = (OrangeNavigationBar *)[self navigationBar];
+    [navigationBar setOrange:![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]];
+
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        [self setNeedsStatusBarAppearanceUpdate];
     }
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]) {
+        return UIStatusBarStyleLightContent;
+    } else {
+        return UIStatusBarStyleDefault;
+    }
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return nil;
 }
 
 // Why this isn't delegated by UIKit to the top view controller, I have no clue.
@@ -88,5 +116,23 @@
 }
 
 AUTOROTATION_FOR_PAD_ONLY
+
+@end
+
+@implementation UIViewController (NavigationController)
+
+- (NavigationController *)navigation {
+    UIViewController *parentViewController = [self parentViewController];
+
+    while (parentViewController != nil) {
+        if ([parentViewController isKindOfClass:[NavigationController class]]) {
+            return (NavigationController *)parentViewController;
+        }
+
+        parentViewController = [parentViewController parentViewController];
+    }
+
+    return nil;
+}
 
 @end

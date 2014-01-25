@@ -8,7 +8,7 @@
 
 #import "LoadingController.h"
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "SharingController.h"
 
@@ -139,6 +139,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    [self viewDidLayoutSubviews];
 
     NSTimeInterval interval = [lastUpdatedOnAppearDate timeIntervalSinceNow];
     BOOL first = (lastUpdatedOnAppearDate == nil);

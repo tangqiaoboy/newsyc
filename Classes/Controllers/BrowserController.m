@@ -79,17 +79,30 @@
     [toolbar setItems:[NSArray arrayWithObjects:spacerItem, backItem, spacerItem, spacerItem, forwardItem, spacerItem, spacerItem, spacerItem, readabilityItem, spacerItem, spacerItem, changableItem, spacerItem, spacerItem, shareItem, spacerItem, nil]];
 }
 
+- (UIImage *)_modernImageWithName:(NSString *)name {
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        name = [name stringByAppendingString:@"7"];
+    }
+
+    name = [name stringByAppendingString:@".png"];
+
+    return [UIImage imageNamed:name];
+}
+
 - (void)loadView {
     [super loadView];
-    
-    toolbar = [[UIToolbar alloc] init];
+
+    [[self view] setClipsToBounds:YES];
+    [[self view] setBackgroundColor:[UIColor whiteColor]];
+
+    toolbar = [[OrangeToolbar alloc] init];
     [toolbar sizeToFit];
     
-    backItem = [[BarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
-    forwardItem = [[BarButtonItem alloc] initWithImage:[UIImage imageNamed:@"forward.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
+    backItem = [[BarButtonItem alloc] initWithImage:[self _modernImageWithName:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
+    forwardItem = [[BarButtonItem alloc] initWithImage:[self _modernImageWithName:@"forward"] style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
     readabilityItem = [[BarButtonItem alloc] initWithImage:[UIImage imageNamed:@"readability.png"] style:UIBarButtonItemStylePlain target:self action:@selector(readability)];
-    refreshItem = [[BarButtonItem alloc] initWithImage:[UIImage imageNamed:@"refresh.png"] style:UIBarButtonItemStylePlain target:self action:@selector(reload)];
-    shareItem = [[BarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action.png"] style:UIBarButtonItemStylePlain target:self action:@selector(share)];
+    refreshItem = [[BarButtonItem alloc] initWithImage:[self _modernImageWithName:@"refresh"] style:UIBarButtonItemStylePlain target:self action:@selector(reload)];
+    shareItem = [[BarButtonItem alloc] initWithImage:[self _modernImageWithName:@"action"] style:UIBarButtonItemStylePlain target:self action:@selector(share)];
     spacerItem = [[BarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     loadingItem = [[ActivityIndicatorItem alloc] initWithSize:[[refreshItem image] size]];
     [self updateToolbarItems];
@@ -98,6 +111,8 @@
     [webview setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
     [webview setDelegate:self];
     [webview setScalesPageToFit:YES];
+    [webview setClipsToBounds:NO];
+    [[webview scrollView] setClipsToBounds:NO];
     [[self view] addSubview:webview];
 }
     
@@ -112,11 +127,18 @@
         NSURLRequest *request = [[NSURLRequest alloc] initWithURL:rootURL];
         [webview loadRequest:[request autorelease]];
     }
-    
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]) {
-        [toolbar setTintColor:[UIColor mainOrangeColor]];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+        // On iOS 7, toolbars are transparent, so showing orange on top of orange looks wrong.
+        [toolbar setOrange:NO];
     } else {
-        [toolbar setTintColor:nil];
+        [toolbar setOrange:![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]];
+    }
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"] && ([toolbar respondsToSelector:@selector(setBarTintColor:)] || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)) {
+        [[loadingItem spinner] setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+    } else {
+        [[loadingItem spinner] setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhite];
     }
 }
 
@@ -130,7 +152,7 @@
         [toolbar setFrame:toolbarFrame];
         [toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin];
         [[self view] addSubview:toolbar];
-        
+
         CGRect webviewFrame = [[self view] bounds];
         webviewFrame.size.height -= toolbarFrame.size.height;
         [webview setFrame:webviewFrame];
@@ -142,6 +164,12 @@
         [toolbar setBackgroundImage:[UIImage imageNamed:@"clear.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         toolbarItem = [[BarButtonItem alloc] initWithCustomView:toolbar];
         [[self navigationItem] addRightBarButtonItem:toolbarItem atPosition:UINavigationItemPositionLeft];
+
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+            // Hide the top border line.
+            [toolbar setClipsToBounds:YES];
+            [toolbar setBounds:CGRectMake(0, 1, [toolbar bounds].size.width, [toolbar bounds].size.height)];
+        }
     }
 }
 

@@ -8,10 +8,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "UIActionSheet+Context.h"
 #import "UINavigationItem+MultipleItems.h"
+#import "EmptyView.h"
 
 #import "CommentListController.h"
 #import "CommentTableCell.h"
@@ -46,8 +47,11 @@
 
 - (void)loadView {
     [super loadView];
+
+    [[self view] setBackgroundColor:[UIColor whiteColor]];
+    [[self view] setClipsToBounds:YES];
     
-    [emptyLabel setText:@"No Comments"];
+    [emptyView setText:@"No Comments"];
     [statusView setBackgroundColor:[UIColor clearColor]];
     
     [self setupHeader];
@@ -63,12 +67,12 @@
         
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             [entryActionsView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin];
-            
+
             CGRect actionsFrame = [entryActionsView frame];
             actionsFrame.origin.y = [[self view] frame].size.height - actionsFrame.size.height;
             actionsFrame.size.width = [[self view] frame].size.width;
             [entryActionsView setFrame:actionsFrame];
-            
+
             CGRect tableFrame = [tableView frame];
             tableFrame.size.height = [[self view] bounds].size.height - actionsFrame.size.height;
             [tableView setFrame:tableFrame];
@@ -91,16 +95,12 @@
     }
     
     expandedCell = nil;
-    [containerContainer release];
-    containerContainer = nil;
     [entryActionsView release];
     entryActionsView = nil;
     [entryActionsViewItem release];
     entryActionsViewItem = nil;
     [detailsHeaderView release];
     detailsHeaderView = nil;
-    [detailsHeaderContainer release];
-    detailsHeaderContainer = nil;
 }
 
 - (void)viewDidLoad {
@@ -139,7 +139,6 @@
     }
 
     [tableView setSeparatorColor:[UIColor whiteColor]];
-
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -172,12 +171,10 @@
     [self clearSavedAction];
     [self clearSavedCompletion];
     
-    [containerContainer release];
     [detailsHeaderView release];
     [entryActionsView release];
     [entryActionsViewItem release];
-    [detailsHeaderContainer release];
-    
+
     [super dealloc];
 }
 
@@ -278,46 +275,21 @@
 }
 
 - (void)setupHeader {
+    if (![self isViewLoaded]) return;
+
     // Only show it if the source is at least partially loaded.
     if (![source isKindOfClass:[HNEntry class]] || [(HNEntry *) source submitter] == nil) return;
     
     [pullToRefreshView setBackgroundColor:[UIColor whiteColor]];
     [pullToRefreshView setTextShadowColor:[UIColor whiteColor]];
     
-    [detailsHeaderContainer release];
-    detailsHeaderContainer = nil;
-    [containerContainer release];
-    containerContainer = nil;
     [detailsHeaderView release];
     detailsHeaderView = nil;
     
     detailsHeaderView = [[DetailsHeaderView alloc] initWithEntry:(HNEntry *) source widthWidth:[[self view] bounds].size.width];
-    [detailsHeaderView setClipsToBounds:YES];
     [detailsHeaderView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
     [detailsHeaderView setDelegate:self];
-    
-    detailsHeaderContainer = [[UIView alloc] initWithFrame:[detailsHeaderView bounds]];
-    [detailsHeaderContainer addSubview:detailsHeaderView];
-    [detailsHeaderContainer setClipsToBounds:YES];
-    [detailsHeaderContainer setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
-    [[detailsHeaderContainer layer] setContentsGravity:kCAGravityTopLeft];
-    
-    UIView *shadow = [[UIView alloc] initWithFrame:CGRectMake(-50.0f, [detailsHeaderView bounds].size.height, [[self view] bounds].size.width + 100.0f, 1.0f)];
-    CALayer *layer = [shadow layer];
-    [layer setShadowOffset:CGSizeMake(0, -2.0f)];
-    [layer setShadowRadius:5.0f];
-    [layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [layer setShadowOpacity:1.0f];
-    [shadow setBackgroundColor:[UIColor grayColor]];
-    [shadow setClipsToBounds:NO];
-    [shadow setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-    
-    containerContainer = [[UIView alloc] initWithFrame:[detailsHeaderView bounds]];
-    [containerContainer setBackgroundColor:[UIColor clearColor]];
-    [containerContainer addSubview:detailsHeaderContainer];
-    [containerContainer addSubview:[shadow autorelease]];
-    [containerContainer setClipsToBounds:NO];
-    [tableView setTableHeaderView:containerContainer];
+    [tableView setTableHeaderView:detailsHeaderView];
     
     suggestedHeaderHeight = [detailsHeaderView bounds].size.height;
 }
@@ -326,12 +298,12 @@
 
 - (void)detailsHeaderView:(DetailsHeaderView *)header selectedURL:(NSURL *)url {
     BrowserController *controller = [[BrowserController alloc] initWithURL:url];
-    [[self navigationController] pushController:[controller autorelease] animated:YES];
+    [[self navigation] pushController:[controller autorelease] animated:YES];
 }
 
 - (void)commentTableCell:(CommentTableCell *)cell selectedURL:(NSURL *)url {
     BrowserController *controller = [[BrowserController alloc] initWithURL:url];
-    [[self navigationController] pushController:[controller autorelease] animated:YES];
+    [[self navigation] pushController:[controller autorelease] animated:YES];
 }
 
 - (void)commentTableCellTapped:(CommentTableCell *)cell {
@@ -349,7 +321,7 @@
 - (void)commentTableCellDoubleTapped:(CommentTableCell *)cell {
     HNEntry *entry = [self entryAtIndexPath:[tableView indexPathForCell:cell]];
     CommentListController *controller = [[CommentListController alloc] initWithSource:entry];
-    [[self navigationController] pushController:[controller autorelease] animated:YES];
+    [[self navigation] pushController:[controller autorelease] animated:YES];
 }
 
 #pragma mark - Actions
@@ -459,7 +431,7 @@
     [controller autorelease];
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [[self navigationController] pushController:controller animated:YES];
+        [[self navigation] pushController:controller animated:YES];
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         ModalNavigationController *navigation = [[ModalNavigationController alloc] initWithRootViewController:controller];
         [self presentViewController:navigation animated:YES completion:NULL];
@@ -598,7 +570,7 @@
     if (![[source session] isAnonymous] || item == kEntryActionsViewItemActions) {
         savedAction();
     } else {
-        [[self navigationController] requestLogin];
+        [[self navigation] requestLogin];
     }
 }
 

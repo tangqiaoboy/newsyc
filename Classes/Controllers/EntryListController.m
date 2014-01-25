@@ -6,13 +6,14 @@
 //  Copyright 2011 Xuzz Productions, LLC. All rights reserved.
 //
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "EntryListController.h"
 #import "LoadingIndicatorView.h"
 #import "PullToRefreshView.h"
 #import "SubmissionTableCell.h"
 #import "UIColor+Orange.h"
+#import "EmptyView.h"
 #import "CommentListController.h"
 
 @implementation EntryListController
@@ -31,19 +32,16 @@
     [tableView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
     [tableView setDelegate:self];
     [tableView setDataSource:self];
+    [tableView setClipsToBounds:NO];
     [[self view] addSubview:tableView];
     
-    emptyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    [emptyLabel setFont:[UIFont systemFontOfSize:17.0f]];
-    [emptyLabel setTextColor:[UIColor grayColor]];
-    [emptyLabel setBackgroundColor:[UIColor clearColor]];
-    [emptyLabel setText:@"No Items"];
-    [emptyLabel setTextAlignment:NSTextAlignmentCenter];
-    
+    emptyView = [[EmptyView alloc] initWithFrame:CGRectZero];
+    [emptyView setText:@"No Items"];
+
     moreCell = [[LoadMoreCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     [[moreCell button] addTarget:self action:@selector(loadMorePressed) forControlEvents:UIControlEventTouchUpInside];
 
-    if (NSClassFromString(@"UIRefreshControl") != nil) {
+    if ([UIRefreshControl class] != nil) {
         refreshControl = [[UIRefreshControl alloc] init];
         [refreshControl addTarget:self action:@selector(refreshFromRefreshControl:) forControlEvents:UIControlEventValueChanged];
         [tableViewController setRefreshControl:refreshControl];
@@ -56,15 +54,11 @@
     [[self view] bringSubviewToFront:statusView];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
-
 - (void)viewDidUnload {
     [super viewDidUnload];
 
-    [emptyLabel release];
-    emptyLabel = nil;
+    [emptyView release];
+    emptyView = nil;
     [pullToRefreshView release];
     pullToRefreshView = nil;
     [refreshControl release];
@@ -82,7 +76,7 @@
     [pullToRefreshView release];
     [refreshControl endRefreshing];
     [refreshControl release];
-    [emptyLabel release];
+    [emptyView release];
     [moreCell release];
     [tableView release];
     [tableViewController removeFromParentViewController];
@@ -148,12 +142,12 @@
 }
 
 - (void)updateStatusDisplay {
-    [self removeStatusView:emptyLabel];
+    [self removeStatusView:emptyView];
     
     [super updateStatusDisplay];
     
     if ([source isLoaded] && [entries count] == 0) {
-        [self addStatusView:emptyLabel];
+        [self addStatusView:emptyView];
     }
 }
 
@@ -227,9 +221,10 @@
 - (UITableViewCell *)tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
         HNEntry *entry = [self entryAtIndexPath:indexPath];
-    
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"entry-cell"];
-        if (cell == nil) cell = [[[[[self class] cellClass] alloc] initWithReuseIdentifier:@"entry-cell"] autorelease];
+
+        Class cellClass = [[self class] cellClass];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass(cellClass)];
+        if (cell == nil) cell = [[[cellClass alloc] initWithReuseIdentifier:NSStringFromClass(cellClass)] autorelease];
 
         [self configureCell:cell forEntry:entry];
     

@@ -5,8 +5,10 @@
 //  Created by Quin Hoxie on 6/2/11.
 //
 
-#import "HNAPISearch.h"
+#import <HNKit/HNAPISearch.h>
 
+@class EmptyView;
+@class OrangeToolbar;
 @class LoadingIndicatorView;
 
 @interface SearchController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate> {
@@ -15,11 +17,11 @@
     NSMutableArray *entries;
 
     UISearchBar *searchBar;
-    UINavigationBar *coloredView;
+    OrangeToolbar *coloredView;
     UISegmentedControl *facetControl;
     
 	UITableView *tableView;
-	UILabel *emptyResultsView;
+	EmptyView *emptyView;
     LoadingIndicatorView *indicator;
 	BOOL searchPerformed;
 }

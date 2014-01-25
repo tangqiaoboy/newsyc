@@ -6,10 +6,11 @@
 //  Copyright 2011 Xuzz Productions, LLC. All rights reserved.
 //
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "UIActionSheet+Context.h"
 #import "UIColor+Orange.h"
+#import "ForceClearNavigationBar.h"
 
 #import "MainTabBarController.h"
 #import "SubmissionListController.h"
@@ -26,6 +27,21 @@
 #import "HNTimeline.h"
 
 @implementation MainTabBarController
+
+- (UITabBarItem *)_tabBarItemWithTitle:(NSString *)title imageName:(NSString *)imageName {
+    UITabBarItem *item = nil;
+
+    if ([UITabBarItem instancesRespondToSelector:@selector(initWithTitle:image:selectedImage:)]) {
+        UIImage *image = [UIImage imageNamed:[imageName stringByAppendingString:@"7.png"]];
+        UIImage *selectedImage = [UIImage imageNamed:[imageName stringByAppendingString:@"7-selected.png"]];
+        item = [[UITabBarItem alloc] initWithTitle:title image:image selectedImage:selectedImage];
+    } else {
+        UIImage *image = [UIImage imageNamed:[imageName stringByAppendingString:@".png"]];
+        item = [[UITabBarItem alloc] initWithTitle:title image:image tag:0];
+    }
+
+    return [item autorelease];
+}
 
 - (id)initWithSession:(HNSession *)session_ {
     if ((self = [super init])) {
@@ -45,18 +61,18 @@
         HNEntryList *newList = [HNEntryList session:session entryListWithIdentifier:kHNEntryListIdentifierNewSubmissions];
         latest = [[[SubmissionListController alloc] initWithSource:newList] autorelease];
         [latest setTitle:@"New Submissions"];
-        [latest setTabBarItem:[[[UITabBarItem alloc] initWithTitle:@"New" image:[UIImage imageNamed:@"new.png"] tag:0] autorelease]];
-    
+        [latest setTabBarItem:[self _tabBarItemWithTitle:@"New" imageName:@"new"]];
+
 #ifdef ENABLE_TIMELINE
         HNEntryList *newList = [HNTimeline timelineForSession:session];
         latest = [[[CommentListController alloc] initWithSource:newList] autorelease];
         [latest setTitle:@"Timeline"];
-        [latest setTabBarItem:[[[UITabBarItem alloc] initWithTitle:@"Timeline" image:[UIImage imageNamed:@"new.png"] tag:0] autorelease]];
+        [latest setTabBarItem:[self _tabBarItemWithTitle:[latest title] imageName:@"new"]];
 #endif
 
         profile = [[[SessionProfileController alloc] initWithSource:[session user]] autorelease];
         [profile setTitle:@"Profile"];
-        [profile setTabBarItem:[[[UITabBarItem alloc] initWithTitle:@"Profile" image:[UIImage imageNamed:@"person.png"] tag:0] autorelease]];
+        [profile setTabBarItem:[self _tabBarItemWithTitle:@"Profile" imageName:@"person"]];
 
         search = [[[SearchController alloc] initWithSession:session] autorelease];
         [search setTitle:@"Search"];
@@ -66,9 +82,19 @@
         [more setTitle:@"More"];
         [more setTabBarItem:[[[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:0] autorelease]];
 
-        NSMutableArray *items = [NSMutableArray arrayWithObjects:home, latest, profile, /*search,*/ more, nil];
-        [self setViewControllers:items];
-        
+        NSMutableArray *viewControllers = [NSMutableArray arrayWithObjects:home, latest, profile, search, more, nil];
+
+        if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+            for (NSUInteger i = 0; i < viewControllers.count; i++) {
+                // iOS 7 Hack: use a navigation controller to fix the children's layout guides, but force a clear navigation bar so it doesn't show up.
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:[ForceClearNavigationBar class] toolbarClass:nil];
+                [navigationController pushViewController:[viewControllers objectAtIndex:i] animated:NO];
+                [viewControllers replaceObjectAtIndex:i withObject:navigationController];
+            }
+        }
+
+        [self setViewControllers:viewControllers];
+
         [self setDelegate:self];
     }
     
@@ -111,8 +137,10 @@
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-    if (viewController == profile && [session isAnonymous]) {
-        [[self navigationController] requestLogin];
+    BOOL isProfile = viewController == profile || ([viewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *) viewController viewControllers] objectAtIndex:0] == profile);
+
+    if (isProfile && [session isAnonymous]) {
+        [[self navigation] requestLogin];
 
         return NO;
 	}
@@ -124,7 +152,7 @@
     if (![session isAnonymous]) {
         [self requestSubmissionType];
     } else {
-        [[self navigationController] requestLogin];
+        [[self navigation] requestLogin];
     }
 }
 
@@ -138,14 +166,24 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    [[self navigationItem] setRightBarButtonItem:composeItem];
+
     // XXX: Fix iOS 6 bug with a tab bar controller in a navigation controller.
     [self setViewControllers:[self viewControllers]];
     [[self selectedViewController] setWantsFullScreenLayout:YES];
 
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"disable-orange"]) {
-      [[self tabBar] setSelectedImageTintColor:[UIColor mainOrangeColor]];
+        if ([[self tabBar] respondsToSelector:@selector(setBarTintColor:)]) {
+            [[self tabBar] setTintColor:[UIColor mainOrangeColor]];
+        } else {
+            [[self tabBar] setSelectedImageTintColor:[UIColor mainOrangeColor]];
+        }
     } else {
-      [[self tabBar] setSelectedImageTintColor:nil];
+        if ([[self tabBar] respondsToSelector:@selector(setBarTintColor:)]) {
+            [[self tabBar] setTintColor:nil];
+        }
+
+        [[self tabBar] setSelectedImageTintColor:nil];
     }
 }
 

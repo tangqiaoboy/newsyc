@@ -6,7 +6,7 @@
 //  Copyright 2011 Xuzz Productions, LLC. All rights reserved.
 //
 
-#import "HNKit.h"
+#import <HNKit/HNKit.h>
 
 #import "DetailsHeaderView.h"
 
@@ -19,8 +19,7 @@
 
 - (id)initWithEntry:(HNEntry *)entry_ widthWidth:(CGFloat)width {
     if ((self = [super init])) {
-        CALayer *layer = [self layer];
-        [layer setNeedsDisplayOnBoundsChange:YES];
+        [[self layer] setNeedsDisplayOnBoundsChange:YES];
                 
         [self setEntry:entry_];
         [self setBackgroundColor:[UIColor whiteColor]];
@@ -28,13 +27,37 @@
         bodyTextView = [[BodyTextView alloc] init];
         [bodyTextView setRenderer:[entry renderer]];
         [bodyTextView setDelegate:self];
-        [self addSubview:bodyTextView];
-        
+
         CGRect frame;
         frame.origin = CGPointZero;
         frame.size.width = width;
         frame.size.height = [self suggestedHeightWithWidth:width];
         [self setFrame:frame];
+
+        detailsHeaderContainer = [[UIView alloc] initWithFrame:[self bounds]];
+        [detailsHeaderContainer addSubview:bodyTextView];
+        [detailsHeaderContainer setClipsToBounds:YES];
+        [detailsHeaderContainer setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
+        [[detailsHeaderContainer layer] setContentsGravity:kCAGravityTopLeft];
+
+        containerContainer = [[UIView alloc] initWithFrame:[self bounds]];
+        [containerContainer setBackgroundColor:[UIColor clearColor]];
+        [containerContainer addSubview:detailsHeaderContainer];
+        [containerContainer setClipsToBounds:NO];
+        [self addSubview:containerContainer];
+
+        if (![self respondsToSelector:@selector(tintColor)]) {
+            UIView *shadow = [[UIView alloc] initWithFrame:CGRectMake(-50.0f, [self bounds].size.height, width + 100.0f, 1.0f)];
+            CALayer *layer = [shadow layer];
+            [layer setShadowOffset:CGSizeMake(0, -2.0f)];
+            [layer setShadowRadius:5.0f];
+            [layer setShadowColor:[[UIColor blackColor] CGColor]];
+            [layer setShadowOpacity:1.0f];
+            [shadow setBackgroundColor:[UIColor grayColor]];
+            [shadow setClipsToBounds:NO];
+            [shadow setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+            [containerContainer addSubview:[shadow autorelease]];
+        }
     }
     
     return self;
@@ -53,15 +76,25 @@
 - (void)dealloc {
     [entry release];
     [bodyTextView release];
+    [detailsHeaderContainer release];
+    [containerContainer release];
     
     [super dealloc];
 }
 
 + (UIEdgeInsets)margins {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return UIEdgeInsetsMake(20.0f, 30.0f, 20.0f, 30.0f);
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return UIEdgeInsetsMake(32.0f, 32.0f, 32.0f, 32.0f);
+        } else {
+            return UIEdgeInsetsMake(20.0f, 30.0f, 20.0f, 30.0f);
+        }
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return UIEdgeInsetsMake(10.0f, 8.0f, 4.0f, 8.0f);
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return UIEdgeInsetsMake(16.0f, 16.0f, 12.0f, 12.0f);
+        } else {
+            return UIEdgeInsetsMake(10.0f, 8.0f, 4.0f, 8.0f);
+        }
     }
 
     return UIEdgeInsetsZero;
@@ -69,9 +102,17 @@
 
 + (CGSize)offsets {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return CGSizeMake(12.0f, 12.0f);
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return CGSizeMake(12.0f, 12.0f);
+        } else {
+            return CGSizeMake(12.0f, 12.0f);
+        }
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return CGSizeMake(8.0f, 8.0f);
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return CGSizeMake(10.0f, 10.0f);
+        } else {
+            return CGSizeMake(8.0f, 8.0f);
+        }
     }
 
     return CGSizeZero;
@@ -79,9 +120,17 @@
 
 + (UIFont *)titleFont {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return [UIFont boldSystemFontOfSize:19.0f];
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return [UIFont systemFontOfSize:28.0f];
+        } else {
+            return [UIFont boldSystemFontOfSize:19.0f];
+        }
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return [UIFont boldSystemFontOfSize:16.0f];
+        if ([self instancesRespondToSelector:@selector(tintColor)]) {
+            return [UIFont systemFontOfSize:20.0f];
+        } else {
+            return [UIFont boldSystemFontOfSize:16.0f];
+        }
     }
 
     return nil;
@@ -134,7 +183,7 @@
     // Add padding between the title and the body if we have both. 
     CGFloat titleBodyPadding = ([[entry body] length] > 0 && [[entry title] length] > 0 ? offsets.height : 0);
     
-    return margins.top + title + titleBodyPadding + body + offsets.height + date + margins.bottom;
+    return ceilf(margins.top + title + titleBodyPadding + body + offsets.height + date + margins.bottom);
 }
 
 - (NSString *)titleText {
@@ -166,7 +215,7 @@
     UIEdgeInsets margins = [[self class] margins];
     CGRect titlerect = [self titleRect];
     
-    if ([self hasDestination]) {
+    if ([self hasDestination] && ![self respondsToSelector:@selector(tintColor)]) {
         CGRect disclosurerect;
         
         disclosurerect.size = [[[self class] disclosureImage] size];
