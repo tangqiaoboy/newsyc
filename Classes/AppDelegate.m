@@ -29,6 +29,8 @@
 #import "UIApplication+ActivityIndicator.h"
 #import "UINavigationItem+MultipleItems.h"
 
+#import "MobClick.h"
+
 @implementation UINavigationController (AppDelegate)
 
 - (BOOL)controllerBelongsOnLeft:(UIViewController *)controller {
@@ -188,7 +190,7 @@
     [pingController setDelegate:self];
     [pingController ping];
     
-    //[MobClick startWithAppkey:@"5130038e527015754500005d"];
+    [MobClick startWithAppkey:@"5130038e527015754500005d"];
     return YES;
 }
          

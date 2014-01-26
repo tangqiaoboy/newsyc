@@ -141,7 +141,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 2) {
-        return [NSString stringWithFormat:@"Startup News, version %@.\n\n 基于开源的 news:yc 修改而来 \n如发现任何Bug，请微博反馈给 @Fenng", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+        return [NSString stringWithFormat:@"Startup News, version %@.\n\n基于开源的 news:yc 修改而来 \n如发现任何Bug，请微博反馈给 @Fenng", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
     }
     
     return nil;
