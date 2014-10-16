@@ -3,15 +3,16 @@
 //  MobClick
 //
 //  Created by Aladdin on 2010-03-25.
-//  Updated by Minghua on 2012-12-19.
-//  Copyright (C) 2010-2013 Umeng.com . All rights reserved.
-//  Version 2.1.3 , updated_at 2012-12-28.
+//  Updated by Minghua on 2014-05-21.
+//  Copyright (C) 2010-2014 Umeng.com . All rights reserved.
+//  Version 3.1.2 , updated_at 2014-05-21.
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
 #define UMOnlineConfigDidFinishedNotification @"OnlineConfigDidFinishedNotification"
 #define XcodeAppVersion [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
+
 
 typedef enum {
     REALTIME = 0,       //实时发送
@@ -22,7 +23,6 @@ typedef enum {
     SEND_ON_EXIT = 7        //退出或进入后台时发送
 } ReportPolicy;
 
-@protocol MobClickDelegate;
 @class CLLocation;
 
 /** MobClick是统计的核心类，本身不需要实例化，所有方法以类方法的形式提供.
@@ -35,10 +35,7 @@ typedef enum {
     不过这种发送策略只在iOS > 4.0时才会生效, iOS < 4.0 会被自动调整为BATCH。
 
  */
-@interface MobClick : NSObject <UIAlertViewDelegate> {
-@private
-    id _internal;
-}
+@interface MobClick : NSObject <UIAlertViewDelegate>
 #pragma mark basics
 
 ///---------------------------------------------------------------------------------------
@@ -143,6 +140,8 @@ typedef enum {
  使用前，请先到友盟App管理后台的设置->编辑自定义事件 中添加相应的事件ID，然后在工程中传入相应的事件ID
  */
 + (void)event:(NSString *)eventId attributes:(NSDictionary *)attributes;
+
++ (void)event:(NSString *)eventId attributes:(NSDictionary *)attributes counter:(int)number;
 
 /** 自定义事件,时长统计.
     使用前，请先到友盟App管理后台的设置->编辑自定义事件 中添加相应的事件ID，然后在工程中传入相应的事件ID.
@@ -264,6 +263,8 @@ typedef enum {
 
 + (NSDictionary *)getConfigParams;
 
++ (NSString *)getAdURL;
+
 
 ///---------------------------------------------------------------------------------------
 /// @name 地理位置设置
@@ -299,23 +300,6 @@ typedef enum {
 
 #pragma mark DEPRECATED methods from version 1.7
 
-
-/** 设置MobClick代理,已经startWithAppkey:所取代,不要再使用，原有代码可以删除
-*/
-
-+ (void)setDelegate:(id)delegate;
-+ (void)setDelegate:(id)delegate reportPolicy:(ReportPolicy)rp;
-
-/** 记录启动时间，模块开始启用,不要再使用，原有代码可以删除
-*/
-
-+ (void)appLaunched;
-
-/** 记录软件终止时间，模块终止,不要再使用，原有代码可以删除
- */
-
-+ (void)appTerminated;
-
 /** 友盟模块启动
  [MobClick startWithAppkey:]通常在application:didFinishLaunchingWithOptions:里被调用监听
  App启动和退出事件，如果你没法在application:didFinishLaunchingWithOptions:里添加友盟的[MobClick startWithAppkey:]
@@ -325,26 +309,5 @@ typedef enum {
  */
 
 + (void)startSession:(NSNotification *)notification;
-
-
-/** 获取友盟sdk 版本号,目前友盟模块启动时自动调用,不要再使用，原有代码可以删除
- */
-
-+ (NSString *)getAgentVersion;  //
-@end
-
-/** MobClickDelegate protocol
-    此协议的三个方法不再建议使用，建议用新方法代替
-    + (void)startWithAppkey:(NSString *)appKey reportPolicy:(ReportPolicy)rp channelId:(NSString *)cid;
-    + (void)checkUpdate:(id)delegate selector:(SEL)callBackSelector;
-
- */
-
-
-@protocol MobClickDelegate <NSObject>
-@optional
-- (NSString *)appKey;
-- (NSString *)channelId;
-- (void)appUpdate:(NSDictionary *)appUpdateInfo;
 
 @end

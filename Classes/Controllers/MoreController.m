@@ -120,7 +120,7 @@
         } else if ([indexPath row] == 2) {
             [[cell textLabel] setText:@"@Fenng"];
         }else if ([indexPath row] == 3) {
-            [[cell textLabel] setText:@"家庭用药"];
+            [[cell textLabel] setText:@"丁香医生"];
         }
     }
     
