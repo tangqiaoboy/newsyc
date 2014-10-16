@@ -74,15 +74,15 @@
         [profile setTitle:@"Profile"];
         [profile setTabBarItem:[self _tabBarItemWithTitle:@"Profile" imageName:@"person"]];
 
-        search = [[[SearchController alloc] initWithSession:session] autorelease];
+        /*search = [[[SearchController alloc] initWithSession:session] autorelease];
         [search setTitle:@"Search"];
         [search setTabBarItem:[[[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0] autorelease]];
-
+         */
         more = [[[MoreController alloc] initWithSession:session] autorelease];
         [more setTitle:@"More"];
         [more setTabBarItem:[[[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:0] autorelease]];
 
-        NSMutableArray *viewControllers = [NSMutableArray arrayWithObjects:home, latest, profile, search, more, nil];
+        NSMutableArray *viewControllers = [NSMutableArray arrayWithObjects:home, latest, profile, more, nil];
 
         if ([self respondsToSelector:@selector(topLayoutGuide)]) {
             for (NSUInteger i = 0; i < viewControllers.count; i++) {

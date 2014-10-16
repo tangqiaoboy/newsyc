@@ -40,13 +40,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.1</string>
+	<string>101</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHighResolutionCapable</key>
 	<true/>
-	<key>UILaunchImageFile</key>
-	<string>Legacy-Default</string>
 	<key>UILaunchImages</key>
 	<array>
 		<dict>
